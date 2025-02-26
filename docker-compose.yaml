@@ -1,0 +1,41 @@
+version: '3.9'
+
+services:
+  api:
+    container_name: api
+    build:
+      context: ./
+      dockerfile: ./Api/Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - backend
+    
+  db:
+    container_name: db
+    image: postgres
+    volumes:
+      - db-data:/var/lib/postgresql/
+    environment:
+      POSTGRES_DB: "postgres"
+      POSTGRES_USER: "test"
+      POSTGRES_PASSWORD: "test"
+    ports:
+      - "5433:5432"
+    networks:
+      - backend
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      
+networks:
+  backend:
+    driver: bridge
+    
+volumes:
+  db-data:
