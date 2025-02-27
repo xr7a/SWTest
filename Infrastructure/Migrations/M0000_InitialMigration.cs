@@ -16,7 +16,7 @@ public class M0000_InitialMigration: Migration
             .WithColumn("id").AsInt32().PrimaryKey().Identity()
             .WithColumn("name").AsString().NotNullable()
             .WithColumn("surname").AsString().NotNullable()
-            .WithColumn("phone").AsString().NotNullable()
+            .WithColumn("phone").AsString().NotNullable().Unique()
             .WithColumn("company_id").AsInt32().NotNullable()
             .WithColumn("department_id").AsInt32().ForeignKey().NotNullable();
         
@@ -28,7 +28,7 @@ public class M0000_InitialMigration: Migration
             .WithColumn("id").AsInt32().PrimaryKey().Identity()
             .WithColumn("employee_id").AsInt32().ForeignKey().NotNullable().Unique()
             .WithColumn("type").AsString().NotNullable()
-            .WithColumn("number").AsString().NotNullable();
+            .WithColumn("number").AsString().NotNullable().Unique();
 
         Create.ForeignKey().FromTable("passports").ForeignColumn("employee_id").ToTable("employees").PrimaryColumn("id").OnDelete(System.Data.Rule.Cascade);
     }

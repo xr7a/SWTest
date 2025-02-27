@@ -6,29 +6,32 @@ using Npgsql;
 
 namespace DataAccess.Dapper;
 
-public class DapperContext(IDapperSettings dapperSettings, IDbConnection? connection, IDbTransaction? transaction)
+public class DapperContext(IDapperSettings dapperSettings)
     : IDapperContext, IDisposable
 {
+    private IDbConnection? _connection;
+    private IDbTransaction? _transaction;
+
     public void BeginTransaction()
     {
-        connection = new NpgsqlConnection(dapperSettings.ConnectionString);
-        if (connection.State != ConnectionState.Open)
+        _connection = new NpgsqlConnection(dapperSettings.ConnectionString);
+        if (_connection.State != ConnectionState.Open)
         {
-            connection.Open();
+            _connection.Open();
         }
 
-        transaction = connection.BeginTransaction();
+        _transaction = _connection.BeginTransaction();
     }
 
     public void Commit()
     {
-        transaction?.Commit();
+        _transaction?.Commit();
         Dispose();
     }
 
     public void Rollback()
     {
-        transaction?.Rollback();
+        _transaction?.Rollback();
         Dispose();
     }
 
@@ -51,7 +54,7 @@ public class DapperContext(IDapperSettings dapperSettings, IDbConnection? connec
     {
         return await Execute(query =>
                 query.QueryFirstAsync<T>(queryObject.Sql, queryObject.Params,
-                    transaction: useTransaction ? transaction : null))
+                    transaction: useTransaction ? _transaction : null))
             .ConfigureAwait(false);
     }
 
@@ -59,15 +62,17 @@ public class DapperContext(IDapperSettings dapperSettings, IDbConnection? connec
     {
         await Execute(query =>
                 query.ExecuteAsync(queryObject.Sql, queryObject.Params,
-                    transaction: useTransaction ? transaction : null))
+                    transaction: useTransaction ? _transaction : null))
             .ConfigureAwait(false);
     }
+
     private async Task<T> Execute<T>(Func<IDbConnection, Task<T>> query)
     {
-        if (transaction != null && connection != null)
+        if (_transaction != null && _connection != null)
         {
-            return await query(connection).ConfigureAwait(false);
+            return await query(_connection).ConfigureAwait(false);
         }
+
         await using var executeConnection = new NpgsqlConnection(dapperSettings.ConnectionString);
         var result = await query(executeConnection).ConfigureAwait(false);
         await executeConnection.CloseAsync();
@@ -76,11 +81,10 @@ public class DapperContext(IDapperSettings dapperSettings, IDbConnection? connec
 
     public void Dispose()
     {
-        transaction?.Dispose();
-        transaction = null;
-        connection?.Close();
-        connection?.Dispose();
-        connection = null
-            ;
+        _transaction?.Dispose();
+        _transaction = null;
+        _connection?.Close();
+        _connection?.Dispose();
+        _connection = null;
     }
 }

@@ -2,6 +2,7 @@
 using DataAccess.Dapper.Interfaces;
 using Domain.DbModels;
 using Domain.Interfaces;
+using Infrastructure.Repositories.Scripts;
 
 namespace Infrastructure.Repositories;
 
@@ -12,42 +13,64 @@ public class EmployeeRepository(IDapperContext dapperContext) : IEmployeeReposit
         dapperContext.BeginTransaction();
     }
 
-    public async Task CreateAsync()
+    public void Commit()
     {
-        
+        dapperContext.Commit();
     }
 
-    public async Task<DbEmployee?> GetEmployeeByIdAsync(int id)
+    public void Rollback()
     {
-        return await dapperContext.FirstOrDefault<DbEmployee>(new QueryObject(
-            @"select * from employees where id = @id", new { id }));
+        dapperContext.Rollback();
     }
 
-    public async Task<List<DbEmployeeFull>?> GetEmployeesByCompanyAsync(int companyId)
+    public async Task<int> CreateEmployee(DbEmployee dbEmployee)
+    {
+        return await dapperContext.CommandWithResponse<int>(new QueryObject(
+            Sql.CreateEmployee,
+            new
+            {
+                name = dbEmployee.Name, surname = dbEmployee.Surname, phone = dbEmployee.Phone,
+                companyId = dbEmployee.CompanyId, departmentId = dbEmployee.DepartmentId
+            }));
+    }
+
+    public async Task UpdateEmployee(DbEmployee dbEmployee)
+    {
+        await dapperContext.Command(new QueryObject(
+            Sql.UpdateEmployee,
+            new
+            {
+                name = dbEmployee.Name, surname = dbEmployee.Surname, phone = dbEmployee.Phone,
+                departmentId = dbEmployee.DepartmentId, companyId = dbEmployee.CompanyId
+            }));
+    }
+
+    public async Task<bool> IsEmployeeExistByPhone(string phone)
+    {
+        return await dapperContext.CommandWithResponse<bool>(new QueryObject(
+            Sql.IsEmployeeExistByPhone, new { phone }));
+    } 
+    public async Task<bool> IsEmployeeExistById(int id)
+    {
+        return await dapperContext.CommandWithResponse<bool>(new QueryObject(
+            Sql.IsEmployeeExistById, new { id }));
+    }
+
+    public async Task<List<DbEmployeeFull>?> GetEmployeesByCompany(int companyId)
     {
         return await dapperContext.ListOrEmpty<DbEmployeeFull>(new QueryObject(
-            @"
-            select 
-                e.id, e.name, e.surname, e.phone, e.company_id,
-                p.type as passport_type, p.number as passport_number,
-                d.name as department_name, d.phone as department_phone
-            from employees
-            left join passports p on e.id = p.employee_id
-            left join departments d on e.department_id = d.id
-            where e.company_id = @companyId", new { companyId }));
+            Sql.GetEmployeesByCompany, new { companyId }));
     }
 
-    public async Task<List<DbEmployeeFull>?> GetEmployeesByDepartmentAsync(int departmentId)
+    public async Task<List<DbEmployeeFull>?> GetEmployeesByDepartment(int departmentId)
     {
         return await dapperContext.ListOrEmpty<DbEmployeeFull>(new QueryObject(
-            @"
-            select
-                e.id, e.name, e.surname, e.phone, e.company_id,
-                p.type as passport_type, p.number as passport_number,
-                d.name as department_name, d.phone as department_phone
-            from employees e
-            left join passports p on e.id = p.employee_id
-            left join departments d on e.departmentId = d.id
-            where e.id = @departmentId;", new { departmentId }));
+            Sql.GetEmployeesByDepartment, new { departmentId }));
+    }
+
+    public async Task DeleteEmployee(int id)
+    {
+        await dapperContext.Command(new QueryObject(
+            Sql.DeleteEmployee, new { id }));
     }
 }

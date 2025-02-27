@@ -12,5 +12,5 @@ public class DbDepartment
     public string Name { get; set; }
 
     [Required, MaxLength(50)]
-    public string Number { get; set; }
+    public string Phone { get; set; }
 }

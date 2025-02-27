@@ -7,7 +7,7 @@ public class DapperSettings : IDapperSettings
 {
     public DapperSettings(IConfiguration configuration)
     {
-        ConnectionString = configuration["ConnectionString:Database"] ??
+        ConnectionString = configuration.GetConnectionString("Database") ??
                            throw new ArgumentException("Set database connection string");
     }
     

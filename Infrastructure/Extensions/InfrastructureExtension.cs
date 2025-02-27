@@ -1,5 +1,9 @@
 ﻿using System.Reflection;
+using Domain.Interfaces;
+using Domain.Models;
 using FluentMigrator.Runner;
+using Infrastructure.Repositories;
+using Infrastructure.Repositories.Scripts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -25,5 +29,13 @@ public static class InfrastructureExtension
         var runner = scope.ServiceProvider.GetService<IMigrationRunner>();
         runner.MigrateUp();
         return serviceProvider;
+    }
+
+    public static IServiceCollection AddRepositories(this IServiceCollection services)
+    {
+        services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+        services.AddScoped<IPassportRepository, PassportRepository>();
+        services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+        return services;
     }
 }

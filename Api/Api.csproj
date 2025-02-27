@@ -19,4 +19,9 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="7.3.0" />
+      <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="7.3.0" />
+    </ItemGroup>
+
 </Project>

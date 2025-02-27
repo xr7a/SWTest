@@ -20,8 +20,38 @@
 
     <ItemGroup>
       <EmbeddedResource Update="Repositories\Scripts\Sql.resx">
-        <Generator>ResXFileCodeGenerator</Generator>
+        <Generator>PublicResXFileCodeGenerator</Generator>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <LastGenOutput>Sql.Designer.cs</LastGenOutput>
       </EmbeddedResource>
+      <EmbeddedResource Update="Repositories\Scripts\Sql.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>Sql.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Repositories\Scripts\Sql.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>Sql.resx</DependentUpon>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="Repositories\Scripts\Employee\GetEmployeesByCompany.sql">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Repositories\Scripts\Employee\GetEmployeesByDepartment.sql">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Repositories\Scripts\Employee\GetEmployeeById.sql">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Repositories\Scripts\Employee\IsEmployeeExistByPhone.sql">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>
