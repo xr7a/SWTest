@@ -124,6 +124,9 @@
     <data name="GetEmployeesByCompany" type="System.Resources.ResXFileRef, System.Windows.Forms">
         <value>Employee\GetEmployeesByCompany.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
     </data>
+    <data name="GetEmployeeById" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>Employee\GetEmployeeById.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+    </data>
     <data name="IsEmployeeExistByPhone" type="System.Resources.ResXFileRef, System.Windows.Forms">
         <value>Employee\IsEmployeeExistByPhone.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
     </data> 
@@ -156,5 +159,11 @@
     </data>
     <data name="IsDepartmentExistById" type="System.Resources.ResXFileRef, System.Windows.Forms">
         <value>Department\IsDepartmentExistById.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+    </data>
+    <data name="isDepartmentExistByPhone" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>Department\isDepartmentExistByPhone.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+    </data>
+    <data name="GetDepartmentById" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>Department\GetDepartmentById.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
     </data>
 </root>

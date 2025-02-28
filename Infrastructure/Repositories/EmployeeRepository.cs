@@ -36,19 +36,17 @@ public class EmployeeRepository(IDapperContext dapperContext) : IEmployeeReposit
 
     public async Task UpdateEmployee(DbEmployee dbEmployee)
     {
-        Console.WriteLine(dbEmployee.DepartmentId + " dfjkdlf");
         await dapperContext.Command(new QueryObject(
             Sql.UpdateEmployee,
             new
             {
-                name = dbEmployee.Name, surname = dbEmployee.Surname, phone = dbEmployee.Phone,
+                id = dbEmployee.Id, name = dbEmployee.Name, surname = dbEmployee.Surname, phone = dbEmployee.Phone,
                 departmentId = dbEmployee.DepartmentId, companyId = dbEmployee.CompanyId
             }));
     }
 
     public async Task<bool> IsEmployeeExistByPhone(string phone)
     {
-        Console.WriteLine(Sql.IsEmployeeExistByPhone);
         return await dapperContext.CommandWithResponse<bool>(new QueryObject(
             Sql.IsEmployeeExistByPhone, new { phone }));
     }
@@ -57,6 +55,12 @@ public class EmployeeRepository(IDapperContext dapperContext) : IEmployeeReposit
     {
         return await dapperContext.CommandWithResponse<bool>(new QueryObject(
             Sql.IsEmployeeExistById, new { id }));
+    }
+
+    public async Task<DbEmployeePassport?> GetEmployeeWithPassport(int id)
+    {
+        return await dapperContext.CommandWithResponse<DbEmployeePassport?>(new QueryObject(
+            Sql.GetEmployeeById, new { id }));
     }
 
     public async Task<List<DbEmployeeFull>?> GetEmployeesByCompany(int companyId)

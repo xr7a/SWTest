@@ -1,7 +1,5 @@
-﻿using Application.Dto.Requests;
-using Application.Dto.Requests.Employee;
+﻿using Application.Dto.Requests.Employee;
 using Application.Dto.Responses;
-using Application.Exceptions;
 using Application.Exceptions.Department;
 using Application.Exceptions.Employee;
 using Application.Interfaces;
@@ -60,73 +58,59 @@ public class EmployeeService : IEmployeeService
 
     public async Task UpdateEmployee(UpdateEmployeeRequest updateEmployeeRequest, int id)
     {
-        if (!await _employeeRepository.IsEmployeeExistById(id))
+        var employeeWithPassport = await _employeeRepository.GetEmployeeWithPassport(id);
+        
+        if (employeeWithPassport is null)
         {
             throw new EmployeeDoesNotExistException(id);
         }
 
-        bool employeeHasUpdates = false;
-        bool passportHasUpdates = updateEmployeeRequest.Passport != null &&
-                                  (!string.IsNullOrEmpty(updateEmployeeRequest.Passport.Type) ||
-                                   !string.IsNullOrEmpty(updateEmployeeRequest.Passport.Number));
-
-        if (!string.IsNullOrEmpty(updateEmployeeRequest.Phone))
+        if (updateEmployeeRequest.DepartmentId.HasValue)
         {
-            if (await _employeeRepository.IsEmployeeExistByPhone(updateEmployeeRequest.Phone))
+            var isDepartmentExist =
+                await _departmentRepository.IsDepartmentExistById((int)updateEmployeeRequest.DepartmentId);
+            if (!isDepartmentExist)
+            {
+                throw new DepartmentDoesNotExistException((int)updateEmployeeRequest.DepartmentId);
+            }
+        }
+        
+        if(!string.IsNullOrEmpty(updateEmployeeRequest.Phone))
+        {
+            var isEmployeeExistByPhone = await _employeeRepository.IsEmployeeExistByPhone(updateEmployeeRequest.Phone);
+            if (isEmployeeExistByPhone)
             {
                 throw new PhoneIsAlreadyUsedException(updateEmployeeRequest.Phone);
             }
-
-            employeeHasUpdates = true;
         }
-
-        if (updateEmployeeRequest.DepartmentId.HasValue)
+        
+        var employee = new DbEmployee
         {
-            if (!await _departmentRepository.IsDepartmentExistById(updateEmployeeRequest.DepartmentId.Value))
-            {
-                throw new DepartmentDoesNotExistException(updateEmployeeRequest.DepartmentId.Value);
-            }
-
-            employeeHasUpdates = true;
-        }
-
-        if (!string.IsNullOrEmpty(updateEmployeeRequest.Name) ||
-            !string.IsNullOrEmpty(updateEmployeeRequest.Surname) ||
-            updateEmployeeRequest.CompanyId.HasValue)
+            Id = employeeWithPassport.Id,
+            Name = updateEmployeeRequest.Name ?? employeeWithPassport.Name,
+            Surname = updateEmployeeRequest.Surname ?? employeeWithPassport.Surname,
+            CompanyId = updateEmployeeRequest.CompanyId ?? employeeWithPassport.CompanyId,
+            DepartmentId = updateEmployeeRequest.DepartmentId ?? employeeWithPassport.DepartmentId,
+            Phone = updateEmployeeRequest.Phone ?? employeeWithPassport.Phone
+        };
+        var passport = new DbPassport
         {
-            employeeHasUpdates = true;
-        }
-
-        if (employeeHasUpdates && passportHasUpdates)
+            EmployeeId = employeeWithPassport.Id,
+            Number = updateEmployeeRequest.Passport?.Number ?? employeeWithPassport.PassportNumber,
+            Type = updateEmployeeRequest.Passport?.Type ?? employeeWithPassport.PassportType
+        };
+        
+        _employeeRepository.BeginTransaction();
+        try
         {
-            _employeeRepository.BeginTransaction();
-            try
-            {
-                var employee = updateEmployeeRequest.Adapt<DbEmployee>();
-                employee.Id = id;
-                var passport = updateEmployeeRequest.Passport.Adapt<DbPassport>();
-                passport.EmployeeId = id;
-                await _employeeRepository.UpdateEmployee(employee);
-                await _passportRepository.UpdatePassport(passport);
-                _employeeRepository.Commit();
-            }
-            catch
-            {
-                _employeeRepository.Rollback();
-                throw;
-            }
-        }
-        else if (employeeHasUpdates)
-        {
-            var employee = updateEmployeeRequest.Adapt<DbEmployee>();
-            employee.Id = id;
             await _employeeRepository.UpdateEmployee(employee);
-        }
-        else if (passportHasUpdates)
-        {
-            var passport = updateEmployeeRequest.Passport.Adapt<DbPassport>();
-            passport.EmployeeId = id;
             await _passportRepository.UpdatePassport(passport);
+            _employeeRepository.Commit();
+        }
+        catch
+        {
+            _employeeRepository.Rollback();
+            throw;
         }
     }
 
@@ -140,6 +124,11 @@ public class EmployeeService : IEmployeeService
         }
 
         var dbEmployees = await _employeeRepository.GetEmployeesByDepartment(id);
+        return dbEmployees.Select(i => i.Adapt<GetEmployeesByDepartmentResponse>()).ToList();
+    }
+    public async Task<List<GetEmployeesByDepartmentResponse>> GetEmployeesByCompanyId(int id)
+    {
+        var dbEmployees = await _employeeRepository.GetEmployeesByCompany(id);
         return dbEmployees.Adapt<List<GetEmployeesByDepartmentResponse>>();
     }
 

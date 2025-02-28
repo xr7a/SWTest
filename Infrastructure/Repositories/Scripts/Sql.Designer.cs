@@ -61,7 +61,8 @@ namespace Infrastructure.Repositories.Scripts {
         
         /// <summary>
         ///   Looks up a localized string similar to insert into departments (name, phone)
-        ///values (@name, @phone).
+        ///values (@name, @phone)
+        ///returning id.
         /// </summary>
         internal static string CreateDepartment {
             get {
@@ -111,11 +112,42 @@ namespace Infrastructure.Repositories.Scripts {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to select id, name, number
+        ///from departments
+        ///where id = @id.
+        /// </summary>
+        internal static string GetDepartmentById {
+            get {
+                return ResourceManager.GetString("GetDepartmentById", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to select
+        ///    e.id,
+        ///    e.name,
+        ///    e.surname,
+        ///    e.phone,
+        ///    e.company_id as &quot;CompanyId&quot;,
+        ///    e.department_id as &quot;DepartmentId&quot;,
+        ///    p.type as &quot;PassportType&quot;,
+        ///    p.number as &quot;PassportNumber&quot;
+        ///from employees e
+        ///left join passports p on e.department_id = p.id
+        ///where e.id = @id.
+        /// </summary>
+        internal static string GetEmployeeById {
+            get {
+                return ResourceManager.GetString("GetEmployeeById", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to select
         ///    e.id, e.name, e.surname, e.phone, e.company_id,
-        ///    p.type as passport_type, p.number as passport_number,
-        ///    d.name as department_name, d.phone as department_phone
-        ///from employees
+        ///    p.type as &quot;PassportType&quot;, p.number as &quot;PassportNumber&quot;,
+        ///    d.name as &quot;DepartmentName&quot;, d.phone as &quot;DepartmentPhone&quot;
+        ///from employees e
         ///         left join passports p on e.id = p.employee_id
         ///         left join departments d on e.department_id = d.id
         ///where e.company_id = @companyId.
@@ -128,13 +160,20 @@ namespace Infrastructure.Repositories.Scripts {
         
         /// <summary>
         ///   Looks up a localized string similar to select
-        ///    e.id, e.name, e.surname, e.phone, e.company_id,
-        ///    p.type as passport_type, p.number as passport_number,
-        ///    d.name as department_name, d.phone as department_phone
+        ///    e.id,
+        ///    e.name,
+        ///    e.surname,
+        ///    e.phone,
+        ///    e.company_id,
+        ///    p.type as &quot;PassportType&quot;,
+        ///    p.number as &quot;PassportNumber&quot;,
+        ///    d.name as &quot;DepartmentName&quot;,
+        ///    d.phone as &quot;DepartmentPhone&quot;
         ///from employees e
         ///         left join passports p on e.id = p.employee_id
-        ///         left join departments d on e.departmentId = d.id
-        ///where e.id = @departmentId;.
+        ///         left join departments d on e.department_id = d.id
+        ///where e.department_id = @departmentId;
+        ///.
         /// </summary>
         internal static string GetEmployeesByDepartment {
             get {
@@ -155,6 +194,17 @@ namespace Infrastructure.Repositories.Scripts {
         
         /// <summary>
         ///   Looks up a localized string similar to select exists(select id
+        ///              from departments
+        ///              where phone = @phone).
+        /// </summary>
+        internal static string isDepartmentExistByPhone {
+            get {
+                return ResourceManager.GetString("isDepartmentExistByPhone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to select exists(select id
         ///              from employees
         ///              where id = @id).
         /// </summary>
@@ -167,7 +217,7 @@ namespace Infrastructure.Repositories.Scripts {
         /// <summary>
         ///   Looks up a localized string similar to select exists(select id
         ///              from employees
-        ///              where id = @id).
+        ///              where phone = @phone).
         /// </summary>
         internal static string IsEmployeeExistByPhone {
             get {
@@ -194,7 +244,7 @@ namespace Infrastructure.Repositories.Scripts {
         ///    phone = coalesce(@phone, phone),
         ///    company_id = coalesce(@companyId, company_id),
         ///    department_id = coalesce(@departmentId, department_id)
-        ///where id = @id;.
+        ///where id = @id.
         /// </summary>
         internal static string UpdateEmployee {
             get {
@@ -206,7 +256,7 @@ namespace Infrastructure.Repositories.Scripts {
         ///   Looks up a localized string similar to update passports
         ///set type = coalesce(@type, type),
         ///    number = coalesce(@number, number)
-        ///where id = @passportId.
+        ///where employee_id = @employeeId.
         /// </summary>
         internal static string UpdatePassport {
             get {

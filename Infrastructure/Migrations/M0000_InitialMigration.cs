@@ -10,7 +10,7 @@ public class M0000_InitialMigration: Migration
         Create.Table("departments")
             .WithColumn("id").AsInt32().PrimaryKey().Identity()
             .WithColumn("name").AsString().NotNullable()
-            .WithColumn("phone").AsString().NotNullable();
+            .WithColumn("phone").AsString().NotNullable().Unique();
         
         Create.Table("employees")
             .WithColumn("id").AsInt32().PrimaryKey().Identity()
@@ -20,9 +20,12 @@ public class M0000_InitialMigration: Migration
             .WithColumn("company_id").AsInt32().NotNullable()
             .WithColumn("department_id").AsInt32().ForeignKey().NotNullable();
         
-        Create.ForeignKey().FromTable("employees").ForeignColumn("department_id").ToTable("departments").PrimaryColumn("id").OnDelete(System.Data.Rule.Cascade);
-
-       
+        Create.ForeignKey()
+            .FromTable("employees")
+            .ForeignColumn("department_id")
+            .ToTable("departments")
+            .PrimaryColumn("id")
+            .OnDelete(System.Data.Rule.Cascade);
         
         Create.Table("passports")
             .WithColumn("id").AsInt32().PrimaryKey().Identity()
@@ -30,7 +33,16 @@ public class M0000_InitialMigration: Migration
             .WithColumn("type").AsString().NotNullable()
             .WithColumn("number").AsString().NotNullable().Unique();
 
-        Create.ForeignKey().FromTable("passports").ForeignColumn("employee_id").ToTable("employees").PrimaryColumn("id").OnDelete(System.Data.Rule.Cascade);
+        Create.ForeignKey()
+            .FromTable("passports")
+            .ForeignColumn("employee_id")
+            .ToTable("employees")
+            .PrimaryColumn("id")
+            .OnDelete(System.Data.Rule.Cascade);
+
+        Create.UniqueConstraint()
+            .OnTable("passports")
+            .Columns("type", "number");
     }
 
     public override void Down()

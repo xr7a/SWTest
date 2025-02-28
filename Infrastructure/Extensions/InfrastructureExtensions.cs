@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure.Extensions;
 
-public static class InfrastructureExtension
+public static class InfrastructureExtensions
 {
     public static IServiceCollection AddFluentMigrator(this IServiceCollection services, IConfiguration configuration)
     {

@@ -13,10 +13,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
+
 var app = builder.Build();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.Services.UseMigrations();
 app.MapControllers();
+app.Services.AddMapper();
 
 if (app.Environment.IsDevelopment())
 {
