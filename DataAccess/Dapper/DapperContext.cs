@@ -50,19 +50,19 @@ public class DapperContext(IDapperSettings dapperSettings)
             .ToList();
     }
 
-    public async Task<T> CommandWithResponse<T>(IQueryObject queryObject, bool useTransaction = false)
+    public async Task<T> CommandWithResponse<T>(IQueryObject queryObject)
     {
         return await Execute(query =>
                 query.QueryFirstAsync<T>(queryObject.Sql, queryObject.Params,
-                    transaction: useTransaction ? _transaction : null))
+                    transaction: _transaction))
             .ConfigureAwait(false);
     }
 
-    public async Task Command(IQueryObject queryObject, bool useTransaction = false)
+    public async Task Command(IQueryObject queryObject)
     {
         await Execute(query =>
                 query.ExecuteAsync(queryObject.Sql, queryObject.Params,
-                    transaction: useTransaction ? _transaction : null))
+                    transaction: _transaction))
             .ConfigureAwait(false);
     }
 

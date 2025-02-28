@@ -1,3 +1,3 @@
 ﻿namespace Application.Exceptions.Department;
 
-public class DepartmentDoesNotExistException(int id) : Exception($"Отдел с id {id} не существует");
+public class DepartmentDoesNotExistException(int id) : AppException($"Отдел с id {id} не существует", 404);

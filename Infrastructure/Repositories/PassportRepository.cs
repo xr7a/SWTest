@@ -18,6 +18,6 @@ public class PassportRepository(IDapperContext dapperContext) : IPassportReposit
     public async Task UpdatePassport(DbPassport dbPassport)
     {
         await dapperContext.Command(new QueryObject(
-            Sql.UpdatePassport, new { type = dbPassport.Type, number = dbPassport.Number }));
+            Sql.UpdatePassport, new { type = dbPassport.Type, number = dbPassport.Number, employeeId = dbPassport.EmployeeId }));
     }
 }

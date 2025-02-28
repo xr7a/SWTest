@@ -36,6 +36,7 @@ public class EmployeeRepository(IDapperContext dapperContext) : IEmployeeReposit
 
     public async Task UpdateEmployee(DbEmployee dbEmployee)
     {
+        Console.WriteLine(dbEmployee.DepartmentId + " dfjkdlf");
         await dapperContext.Command(new QueryObject(
             Sql.UpdateEmployee,
             new
@@ -47,9 +48,11 @@ public class EmployeeRepository(IDapperContext dapperContext) : IEmployeeReposit
 
     public async Task<bool> IsEmployeeExistByPhone(string phone)
     {
+        Console.WriteLine(Sql.IsEmployeeExistByPhone);
         return await dapperContext.CommandWithResponse<bool>(new QueryObject(
             Sql.IsEmployeeExistByPhone, new { phone }));
-    } 
+    }
+
     public async Task<bool> IsEmployeeExistById(int id)
     {
         return await dapperContext.CommandWithResponse<bool>(new QueryObject(
