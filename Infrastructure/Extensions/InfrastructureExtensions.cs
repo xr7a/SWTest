@@ -1,9 +1,7 @@
 ﻿using System.Reflection;
 using Domain.Interfaces;
-using Domain.Models;
 using FluentMigrator.Runner;
 using Infrastructure.Repositories;
-using Infrastructure.Repositories.Scripts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

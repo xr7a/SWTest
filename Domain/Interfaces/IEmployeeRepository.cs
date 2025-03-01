@@ -1,5 +1,4 @@
-﻿using DataAccess.Dapper.Interfaces;
-using Domain.DbModels;
+﻿using Domain.DbModels;
 
 namespace Domain.Interfaces;
 

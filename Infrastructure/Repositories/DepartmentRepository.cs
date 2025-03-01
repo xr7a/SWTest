@@ -34,7 +34,7 @@ public class DepartmentRepository(IDapperContext dapperContext) : IDepartmentRep
     public async Task UpdateDepartment(DbDepartment dbDepartment)
     {
         await dapperContext.Command(new QueryObject(
-            Sql.UpdateDepartment, new { name = dbDepartment.Name, phone = dbDepartment.Phone }));
+            Sql.UpdateDepartment, new { id = dbDepartment.Id, name = dbDepartment.Name, phone = dbDepartment.Phone }));
     }
 
     public async Task DeleteDepartment(int id)

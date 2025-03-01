@@ -30,7 +30,7 @@ public class DepartmentController : ControllerBase
         return Ok(await _departmentService.CreateAsync(departmentRequest));
     }
 
-    [HttpPut]
+    [HttpPatch]
     public async Task<IActionResult> Update([FromBody] UpdateDepartmentRequest request, int id)
     {
         await _departmentService.UpdateAsync(request, id);
