@@ -30,14 +30,14 @@ public class DepartmentController : ControllerBase
         return Ok(await _departmentService.CreateAsync(departmentRequest));
     }
 
-    [HttpPatch]
+    [HttpPatch("{id}")]
     public async Task<IActionResult> Update([FromBody] UpdateDepartmentRequest request, int id)
     {
         await _departmentService.UpdateAsync(request, id);
         return Ok();
     }
 
-    [HttpDelete]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
         await _departmentService.DeleteAsync(id);

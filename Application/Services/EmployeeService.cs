@@ -135,7 +135,7 @@ public class EmployeeService : IEmployeeService
     public async Task DeleteEmployee(int id)
     {
         var isEmployeeExist = await _employeeRepository.IsEmployeeExistById(id);
-        if (isEmployeeExist)
+        if (!isEmployeeExist)
         {
             throw new EmployeeDoesNotExistException(id);
         }
