@@ -1,7 +1,9 @@
 ﻿using Application.Dto.Requests.Employee;
 using Application.Dto.Responses;
+using Application.Dto.Responses.Employee;
 using Application.Exceptions.Department;
 using Application.Exceptions.Employee;
+using Application.Exceptions.Passport;
 using Application.Interfaces;
 using Domain.DbModels;
 using Domain.Interfaces;
@@ -37,6 +39,13 @@ public class EmployeeService : IEmployeeService
             throw new DepartmentDoesNotExistException(employeeRequest.DepartmentId);
         }
 
+        var isPassportExistByNumber =
+            await _passportRepository.IsPassportExistByNumber(employeeRequest.Passport.Number);
+        if (isPassportExistByNumber)
+        {
+            throw new PassportWithNumberAlreadyExistException(employeeRequest.Passport.Number);
+        }
+
         _employeeRepository.BeginTransaction();
         var employee = employeeRequest.Adapt<DbEmployee>();
         try
@@ -56,10 +65,10 @@ public class EmployeeService : IEmployeeService
         }
     }
 
-    public async Task UpdateEmployee(UpdateEmployeeRequest updateEmployeeRequest, int id)
+    public async Task<UpdateEmployeeResponse> UpdateEmployee(UpdateEmployeeRequest updateEmployeeRequest, int id)
     {
         var employeeWithPassport = await _employeeRepository.GetEmployeeWithPassport(id);
-        
+
         if (employeeWithPassport is null)
         {
             throw new EmployeeDoesNotExistException(id);
@@ -74,8 +83,9 @@ public class EmployeeService : IEmployeeService
                 throw new DepartmentDoesNotExistException((int)updateEmployeeRequest.DepartmentId);
             }
         }
-        
-        if(!string.IsNullOrEmpty(updateEmployeeRequest.Phone))
+
+        if (!string.IsNullOrEmpty(updateEmployeeRequest.Phone) &&
+            updateEmployeeRequest.Phone != employeeWithPassport.Phone)
         {
             var isEmployeeExistByPhone = await _employeeRepository.IsEmployeeExistByPhone(updateEmployeeRequest.Phone);
             if (isEmployeeExistByPhone)
@@ -84,6 +94,17 @@ public class EmployeeService : IEmployeeService
             }
         }
         
+        if (!string.IsNullOrEmpty(updateEmployeeRequest.Passport?.Number) &&
+            updateEmployeeRequest.Passport.Number != employeeWithPassport.PassportNumber)
+        {
+            var isPassportExist = await _passportRepository.IsPassportExistByNumber(updateEmployeeRequest.Passport.Number);
+            if (isPassportExist)
+            {
+                throw new PassportWithNumberAlreadyExistException(updateEmployeeRequest.Passport.Number);
+            }
+        }
+
+
         var employee = new DbEmployee
         {
             Id = employeeWithPassport.Id,
@@ -99,13 +120,17 @@ public class EmployeeService : IEmployeeService
             Number = updateEmployeeRequest.Passport?.Number ?? employeeWithPassport.PassportNumber,
             Type = updateEmployeeRequest.Passport?.Type ?? employeeWithPassport.PassportType
         };
-        
+
         _employeeRepository.BeginTransaction();
         try
         {
-            await _employeeRepository.UpdateEmployee(employee);
-            await _passportRepository.UpdatePassport(passport);
+            var updatedEmployee = await _employeeRepository.UpdateEmployee(employee);
+            var updatedPassport = await _passportRepository.UpdatePassport(passport);
+            var updatedEmployeeWithPassport = updatedEmployee.Adapt<UpdateEmployeeResponse>();
+            updatedEmployeeWithPassport.Passport = updatedPassport.Adapt<GetPassportResponse>();
+
             _employeeRepository.Commit();
+            return updatedEmployeeWithPassport;
         }
         catch
         {
@@ -124,8 +149,9 @@ public class EmployeeService : IEmployeeService
         }
 
         var dbEmployees = await _employeeRepository.GetEmployeesByDepartment(id);
-        return dbEmployees.Select(i => i.Adapt<GetEmployeesByDepartmentResponse>()).ToList();
+        return dbEmployees.Adapt<List<GetEmployeesByDepartmentResponse>>();
     }
+
     public async Task<List<GetEmployeesByDepartmentResponse>> GetEmployeesByCompanyId(int id)
     {
         var dbEmployees = await _employeeRepository.GetEmployeesByCompany(id);

@@ -5,3 +5,4 @@ set name = coalesce(@name, name),
     company_id = coalesce(@companyId, company_id),
     department_id = coalesce(@departmentId, department_id)
 where id = @id
+returning name, surname, phone, company_id as "CompanyId", department_id as "DepartmentId"

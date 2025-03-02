@@ -31,8 +31,7 @@ public class EmployeeController: ControllerBase
     [HttpPatch("{id}")]
     public async Task<IActionResult> Patch(UpdateEmployeeRequest updateEmployeeRequest, int id)
     {
-        await _employeeService.UpdateEmployee(updateEmployeeRequest, id);
-        return Ok();
+        return Ok(await _employeeService.UpdateEmployee(updateEmployeeRequest, id));
     } 
 
     [HttpDelete("{id}")]

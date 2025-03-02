@@ -8,7 +8,7 @@ public interface IEmployeeRepository
     void Commit();
     void Rollback();
     public Task<int> CreateEmployee(DbEmployee dbEmployee);
-    public Task UpdateEmployee(DbEmployee dbEmployee);
+    public Task<DbEmployee> UpdateEmployee(DbEmployee dbEmployee);
     public Task<bool> IsEmployeeExistByPhone(string phone);
     public Task<bool> IsEmployeeExistById(int id);
     public Task<DbEmployeePassport?> GetEmployeeWithPassport(int id);

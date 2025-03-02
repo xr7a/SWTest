@@ -2,6 +2,8 @@
 using Application.Dto.Requests.Employee;
 using Application.Dto.Requests.Passport;
 using Application.Dto.Responses;
+using Application.Dto.Responses.Department;
+using Application.Dto.Responses.Employee;
 using Application.Interfaces;
 using Application.Services;
 using Domain.DbModels;
@@ -40,6 +42,11 @@ public static class ApplicationExtensions
                 Name = src.DepartmentName,
                 Phone = src.DepartmentPhone
             });
+
+        TypeAdapterConfig<DbEmployee, UpdateEmployeeResponse>
+            .NewConfig()
+            .IgnoreNullValues(true);
+        
         TypeAdapterConfig.GlobalSettings.Compile();
 
 

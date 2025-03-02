@@ -33,8 +33,7 @@ public class DepartmentController : ControllerBase
     [HttpPatch("{id}")]
     public async Task<IActionResult> Update([FromBody] UpdateDepartmentRequest request, int id)
     {
-        await _departmentService.UpdateAsync(request, id);
-        return Ok();
+        return Ok(await _departmentService.UpdateAsync(request, id));
     }
 
     [HttpDelete("{id}")]

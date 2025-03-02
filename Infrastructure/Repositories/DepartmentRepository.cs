@@ -19,22 +19,22 @@ public class DepartmentRepository(IDapperContext dapperContext) : IDepartmentRep
             Sql.isDepartmentExistByPhone, new { phone }));
     }
 
-    public async Task<DbDepartment> GetDepartmentById(int id)
+    public async Task<DbDepartment?> GetDepartmentById(int id)
     {
-        return await dapperContext.CommandWithResponse<DbDepartment>(new QueryObject(
+        return await dapperContext.CommandWithResponse<DbDepartment?>(new QueryObject(
             Sql.GetDepartmentById, new { id }));
     }
-    
+
+    public async Task<DbDepartment> UpdateDepartment(DbDepartment dbDepartment)
+    {
+        return await dapperContext.CommandWithResponse<DbDepartment>(new QueryObject(
+            Sql.UpdateDepartment, new { id = dbDepartment.Id, name = dbDepartment.Name, phone = dbDepartment.Phone }));
+    }
+
     public async Task<int> CreateDepartment(DbDepartment dbDepartment)
     {
         return await dapperContext.CommandWithResponse<int>(new QueryObject(
             Sql.CreateDepartment, new { name = dbDepartment.Name, phone = dbDepartment.Phone }));
-    }
-
-    public async Task UpdateDepartment(DbDepartment dbDepartment)
-    {
-        await dapperContext.Command(new QueryObject(
-            Sql.UpdateDepartment, new { id = dbDepartment.Id, name = dbDepartment.Name, phone = dbDepartment.Phone }));
     }
 
     public async Task DeleteDepartment(int id)

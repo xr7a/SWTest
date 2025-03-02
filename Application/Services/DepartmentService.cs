@@ -31,12 +31,22 @@ public class DepartmentService : IDepartmentService
         return new CreateDepartmentResponse { Id = id };
     }
 
-    public async Task UpdateAsync(UpdateDepartmentRequest departmentRequest, int id)
+    public async Task<GetDepartmentResponse> UpdateAsync(UpdateDepartmentRequest departmentRequest, int id)
     {
         var department = await _departmentRepository.GetDepartmentById(id);
         if (department == null)
         {
             throw new DepartmentDoesNotExistException(id);
+        }
+
+        if (!string.IsNullOrEmpty(departmentRequest.Phone) && department.Phone != departmentRequest.Phone)
+        {
+            var isDepartmentExistByPhone =
+                await _departmentRepository.IsDepartmentExistByPhone(departmentRequest.Phone);
+            if (isDepartmentExistByPhone)
+            {
+                throw new DepartmentAlreadyExistException(departmentRequest.Phone);
+            }
         }
 
         var updateDepartment = new DbDepartment
@@ -45,13 +55,14 @@ public class DepartmentService : IDepartmentService
             Name = departmentRequest.Name ?? department.Name,
             Phone = departmentRequest.Phone ?? department.Phone
         };
-        await _departmentRepository.UpdateDepartment(updateDepartment);
+        var updatedDepartment = await _departmentRepository.UpdateDepartment(updateDepartment);
+        return updatedDepartment.Adapt<GetDepartmentResponse>();
     }
 
     public async Task DeleteAsync(int id)
     {
         var isDepartmentExist = await _departmentRepository.IsDepartmentExistById(id);
-        if (isDepartmentExist)
+        if (!isDepartmentExist)
         {
             throw new DepartmentDoesNotExistException(id);
         }

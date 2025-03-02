@@ -34,9 +34,9 @@ public class EmployeeRepository(IDapperContext dapperContext) : IEmployeeReposit
             }));
     }
 
-    public async Task UpdateEmployee(DbEmployee dbEmployee)
+    public async Task<DbEmployee> UpdateEmployee(DbEmployee dbEmployee)
     {
-        await dapperContext.Command(new QueryObject(
+        return await dapperContext.CommandWithResponse<DbEmployee>(new QueryObject(
             Sql.UpdateEmployee,
             new
             {

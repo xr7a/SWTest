@@ -15,9 +15,15 @@ public class PassportRepository(IDapperContext dapperContext) : IPassportReposit
             new { employeeId = dbPassport.EmployeeId, number = dbPassport.Number, type = dbPassport.Type }));
     }
 
-    public async Task UpdatePassport(DbPassport dbPassport)
+    public async Task<DbPassport> UpdatePassport(DbPassport dbPassport)
     {
-        await dapperContext.Command(new QueryObject(
+        return await dapperContext.CommandWithResponse<DbPassport>(new QueryObject(
             Sql.UpdatePassport, new { type = dbPassport.Type, number = dbPassport.Number, employeeId = dbPassport.EmployeeId }));
+    }
+
+    public async Task<bool> IsPassportExistByNumber(string number)
+    {
+        return await dapperContext.CommandWithResponse<bool>(new QueryObject(
+            Sql.IsPassportExistByPhone, new { number }));
     }
 }

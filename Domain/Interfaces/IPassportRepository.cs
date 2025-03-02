@@ -5,5 +5,6 @@ namespace Domain.Interfaces;
 public interface IPassportRepository
 {
     public Task CreatePassport(DbPassport dbPassport);
-    public Task UpdatePassport(DbPassport dbPassport);
+    public Task<DbPassport> UpdatePassport(DbPassport dbPassport);
+    public Task<bool> IsPassportExistByNumber(string number);
 }

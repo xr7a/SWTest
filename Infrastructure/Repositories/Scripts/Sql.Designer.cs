@@ -112,7 +112,7 @@ namespace Infrastructure.Repositories.Scripts {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to select id, name, number
+        ///   Looks up a localized string similar to select id, name, phone
         ///from departments
         ///where id = @id.
         /// </summary>
@@ -222,6 +222,15 @@ namespace Infrastructure.Repositories.Scripts {
         internal static string IsEmployeeExistByPhone {
             get {
                 return ResourceManager.GetString("IsEmployeeExistByPhone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string IsPassportExistByPhone {
+            get {
+                return ResourceManager.GetString("IsPassportExistByPhone", resourceCulture);
             }
         }
         

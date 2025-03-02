@@ -1,4 +1,6 @@
-﻿namespace Application.Dto.Responses;
+﻿using Application.Dto.Responses.Department;
+
+namespace Application.Dto.Responses.Employee;
 
 public class GetEmployeesByDepartmentResponse
 {

@@ -1,4 +1,4 @@
-﻿namespace Application.Dto.Responses;
+﻿namespace Application.Dto.Responses.Employee;
 
 public class CreateEmployeeResponse
 {
