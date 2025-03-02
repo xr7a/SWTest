@@ -40,6 +40,6 @@ public class DepartmentController : ControllerBase
     public async Task<IActionResult> Delete(int id)
     {
         await _departmentService.DeleteAsync(id);
-        return Ok();
+        return NoContent();
     }
 }

@@ -18,11 +18,11 @@ public class CreateEmployeeRequest
     public string Phone { get; set; }
 
     [Required(ErrorMessage = "Айди компании обязателен")]
-    [Range(1, int.MaxValue, ErrorMessage = "CompanyId должен быть больше 0")]
+    [Range(1, int.MaxValue - 1, ErrorMessage = "CompanyId должен быть больше 0")]
     public int CompanyId { get; set; }
 
     [Required(ErrorMessage = "Айди отдела обязателен")]
-    [Range(1, int.MaxValue, ErrorMessage = "DepartmentId должен быть больше 0")]
+    [Range(1, int.MaxValue - 1, ErrorMessage = "DepartmentId должен быть больше 0")]
     public int DepartmentId { get; set; }
 
     [Required(ErrorMessage = "Паспортные данные обязательны")]

@@ -29,7 +29,7 @@ public class EmployeeController: ControllerBase
     }
 
     [HttpPatch("{id}")]
-    public async Task<IActionResult> Patch(UpdateEmployeeRequest updateEmployeeRequest, int id)
+    public async Task<IActionResult> Patch([FromBody]UpdateEmployeeRequest updateEmployeeRequest, int id)
     {
         return Ok(await _employeeService.UpdateEmployee(updateEmployeeRequest, id));
     } 

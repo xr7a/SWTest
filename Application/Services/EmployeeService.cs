@@ -66,13 +66,13 @@ public class EmployeeService : IEmployeeService
     }
 
     public async Task<UpdateEmployeeResponse> UpdateEmployee(UpdateEmployeeRequest updateEmployeeRequest, int id)
-    {
+    { 
         var employeeWithPassport = await _employeeRepository.GetEmployeeWithPassport(id);
-
         if (employeeWithPassport is null)
         {
             throw new EmployeeDoesNotExistException(id);
         }
+        Console.WriteLine(employeeWithPassport.Phone);
 
         if (updateEmployeeRequest.DepartmentId.HasValue)
         {
@@ -93,11 +93,14 @@ public class EmployeeService : IEmployeeService
                 throw new PhoneIsAlreadyUsedException(updateEmployeeRequest.Phone);
             }
         }
-        
+
+        Console.WriteLine(updateEmployeeRequest.Passport?.Number);
+        Console.WriteLine(employeeWithPassport.PassportNumber);
         if (!string.IsNullOrEmpty(updateEmployeeRequest.Passport?.Number) &&
             updateEmployeeRequest.Passport.Number != employeeWithPassport.PassportNumber)
         {
-            var isPassportExist = await _passportRepository.IsPassportExistByNumber(updateEmployeeRequest.Passport.Number);
+            var isPassportExist =
+                await _passportRepository.IsPassportExistByNumber(updateEmployeeRequest.Passport.Number);
             if (isPassportExist)
             {
                 throw new PassportWithNumberAlreadyExistException(updateEmployeeRequest.Passport.Number);

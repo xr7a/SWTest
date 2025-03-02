@@ -38,7 +38,7 @@ public class DapperContext(IDapperSettings dapperSettings)
     public async Task<T?> FirstOrDefault<T>(IQueryObject queryObject)
     {
         return await Execute(query =>
-                query.QueryFirstOrDefaultAsync(queryObject.Sql, queryObject.Params))
+                query.QueryFirstOrDefaultAsync<T>(queryObject.Sql, queryObject.Params))
             .ConfigureAwait(false);
     }
 

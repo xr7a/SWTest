@@ -1,5 +1,5 @@
 ﻿select
-    e.id, e.name, e.surname, e.phone, e.company_id,
+    e.id, e.name, e.surname, e.phone, e.company_id as "CompanyId",
     p.type as "PassportType", p.number as "PassportNumber",
     d.name as "DepartmentName", d.phone as "DepartmentPhone"
 from employees e

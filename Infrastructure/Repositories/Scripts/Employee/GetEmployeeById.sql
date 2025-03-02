@@ -8,5 +8,5 @@
     p.type as "PassportType",
     p.number as "PassportNumber"
 from employees e
-left join passports p on e.department_id = p.id
+left join passports p on e.id = p.employee_id
 where e.id = @id

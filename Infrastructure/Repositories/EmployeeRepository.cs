@@ -59,8 +59,7 @@ public class EmployeeRepository(IDapperContext dapperContext) : IEmployeeReposit
 
     public async Task<DbEmployeePassport?> GetEmployeeWithPassport(int id)
     {
-        return await dapperContext.CommandWithResponse<DbEmployeePassport?>(new QueryObject(
-            Sql.GetEmployeeById, new { id }));
+        return await dapperContext.FirstOrDefault<DbEmployeePassport?>(new QueryObject(Sql.GetEmployeeById, new { id }));
     }
 
     public async Task<List<DbEmployeeFull>?> GetEmployeesByCompany(int companyId)

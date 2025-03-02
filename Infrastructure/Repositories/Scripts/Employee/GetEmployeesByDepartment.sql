@@ -3,7 +3,7 @@
     e.name,
     e.surname,
     e.phone,
-    e.company_id,
+    e.company_id as "CompanyId",
     p.type as "PassportType",
     p.number as "PassportNumber",
     d.name as "DepartmentName",

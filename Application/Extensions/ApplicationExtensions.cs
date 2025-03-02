@@ -28,16 +28,16 @@ public static class ApplicationExtensions
         TypeAdapterConfig<UpdateEmployeeRequest, DbEmployee>
             .NewConfig()
             .IgnoreNullValues(true);
-        
+
 
         TypeAdapterConfig<DbEmployeeFull, GetEmployeesByDepartmentResponse>
             .NewConfig()
-            .Map(dest => dest.Passport, src => new GetPassportResponse 
+            .Map(dest => dest.Passport, src => new GetPassportResponse
             {
                 Number = src.PassportNumber,
                 Type = src.PassportType
             })
-            .Map(dest => dest.Department, src => new GetDepartmentResponse 
+            .Map(dest => dest.Department, src => new GetDepartmentResponse
             {
                 Name = src.DepartmentName,
                 Phone = src.DepartmentPhone

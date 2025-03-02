@@ -33,7 +33,9 @@ public class DepartmentService : IDepartmentService
 
     public async Task<GetDepartmentResponse> UpdateAsync(UpdateDepartmentRequest departmentRequest, int id)
     {
+        Console.WriteLine("dsfsdfsdfs");
         var department = await _departmentRepository.GetDepartmentById(id);
+        Console.WriteLine("dsfsdfsdfs");
         if (department == null)
         {
             throw new DepartmentDoesNotExistException(id);

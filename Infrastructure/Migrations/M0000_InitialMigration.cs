@@ -31,7 +31,7 @@ public class M0000_InitialMigration: Migration
             .WithColumn("id").AsInt32().PrimaryKey().Identity()
             .WithColumn("employee_id").AsInt32().ForeignKey().NotNullable().Unique()
             .WithColumn("type").AsString().NotNullable()
-            .WithColumn("number").AsString().NotNullable().Unique();
+            .WithColumn("number").AsString().NotNullable();
 
         Create.ForeignKey()
             .FromTable("passports")
@@ -39,10 +39,6 @@ public class M0000_InitialMigration: Migration
             .ToTable("employees")
             .PrimaryColumn("id")
             .OnDelete(System.Data.Rule.Cascade);
-
-        Create.UniqueConstraint()
-            .OnTable("passports")
-            .Columns("type", "number");
     }
 
     public override void Down()

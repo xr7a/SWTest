@@ -13,6 +13,7 @@ public class DepartmentRepository(IDapperContext dapperContext) : IDepartmentRep
         return await dapperContext.CommandWithResponse<bool>(new QueryObject(
             Sql.IsDepartmentExistById, new { id }));
     }
+
     public async Task<bool> IsDepartmentExistByPhone(string phone)
     {
         return await dapperContext.CommandWithResponse<bool>(new QueryObject(
@@ -21,7 +22,7 @@ public class DepartmentRepository(IDapperContext dapperContext) : IDepartmentRep
 
     public async Task<DbDepartment?> GetDepartmentById(int id)
     {
-        return await dapperContext.CommandWithResponse<DbDepartment?>(new QueryObject(
+        return await dapperContext.FirstOrDefault<DbDepartment?>(new QueryObject(
             Sql.GetDepartmentById, new { id }));
     }
 
